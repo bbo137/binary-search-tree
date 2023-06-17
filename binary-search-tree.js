@@ -39,6 +39,7 @@ class Tree {
   }
 
   insert(value) {
+    debugger
     const node = new Node(value);
 
     if (this.root === null) {
@@ -47,7 +48,7 @@ class Tree {
 
     let aux = this.root;
 
-    while (aux.left != null && aux.right != null) {
+    while (aux.left != null || aux.right != null) {
       if (value < aux.value) aux = aux.left;
       else aux = aux.right;
     }
@@ -141,7 +142,7 @@ class Tree {
   }
 
   isLeaf(node = this.root) {
-    return node.right === null && node.left === null;
+    return (node.left === null && node.right === null);
   }
 
   findLeftLeaf(node = this.root) {
@@ -192,7 +193,7 @@ class Tree {
 
     if (func) func(root);
     else arr.push(root.value);
-  
+
     this.inorder(func, root.right, arr);
 
     return !func ? arr : null;
@@ -209,8 +210,17 @@ class Tree {
     } else {
       arr.push(root.value);
     }
-    
+
     return !func ? arr : null;
+  }
+
+  height(node = this.root) {
+    if (!node) return 0
+    if (this.isLeaf(node)) return 0;
+    const leftCount = this.height(node.left);
+    const rightCount = this.height(node.right);
+
+    return 1 + Math.max(leftCount,rightCount);
   }
   /*
 
@@ -227,20 +237,21 @@ function duplicateValues(node) {
   console.log(node.value * 2);
 }
 
-const input = [3, 1, 6, 7, 5, 4, 9, 10, 11, 13, 15, 17, 19, 21, 23];
+const input = [3, 1, 9, 10, 11, 13, 15, 17];
 //const input = [ 1, 3];
-const ordInt = [
-  ...new Set(
-    input.sort(function (a, b) {
-      return a - b;
-    })
-  ),
-];
+const ordInt = [...new Set(input.sort((a, b) => a - b))];
 
 console.log(ordInt);
 treee = new Tree(ordInt);
 console.log(treee.root.value);
-prettyPrint(treee.root);
-treee.delete(17);
+treee.insert(4);
+treee.insert(5);
+treee.insert(29);
+treee.insert(39);
+treee.insert(49);
+treee.insert(59);
+
 prettyPrint(treee.root);
 
+
+console.log(treee.height())
