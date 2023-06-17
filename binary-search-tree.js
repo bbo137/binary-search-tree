@@ -8,16 +8,16 @@ class Node {
   }
 }
 
-const prettyPrint = (node, prefix = "", isLeft = true) => {
+const prettyPrint = (node, prefix = '', isLeft = true) => {
   if (node === null) {
     return;
   }
   if (node.right !== null) {
-    prettyPrint(node.right, `${prefix}${isLeft ? "│   " : "    "}`, false);
+    prettyPrint(node.right, `${prefix}${isLeft ? '│   ' : '    '}`, false);
   }
-  console.log(`${prefix}${isLeft ? "└── " : "┌── "}${node.value}`);
+  console.log(`${prefix}${isLeft ? '└── ' : '┌── '}${node.value}`);
   if (node.left !== null) {
-    prettyPrint(node.left, `${prefix}${isLeft ? "    " : "│   "}`, true);
+    prettyPrint(node.left, `${prefix}${isLeft ? '    ' : '│   '}`, true);
   }
 };
 
@@ -73,49 +73,46 @@ class Tree {
     }
     if (children === null) return root;
     if (children.left === null || children.right === null) {
-        let aux;
-        
-        if (children.left === null) {
-          aux = children.right;
-        } else {
-          aux = children.left;
-        }
+      let aux;
 
-        // node is root
-        if (parent === null) {
-          return aux;
-        }
-
-        if (children === parent.left) {
-          parent.left = aux;
-        } else {
-          parent.right = aux;
-        }
-
-        aux = null;
-        
+      if (children.left === null) {
+        aux = children.right;
       } else {
-        // find children's next higher value
-        let p = null;
-        let aux = children.right;
-
-        while (aux.left !== null) {
-          p = aux;
-          aux = aux.left;
-        }
-
-        if (p !== null) {
-          p.left = aux.right;
-        } else {
-          children.right = aux.right;
-        }
-        children.value = aux.value;
-        aux = null;
+        aux = children.left;
       }
-      return root;  
+
+      // node is root
+      if (parent === null) {
+        return aux;
+      }
+
+      if (children === parent.left) {
+        parent.left = aux;
+      } else {
+        parent.right = aux;
+      }
+
+      aux = null;
+    } else {
+      // find children's next higher value
+      let p = null;
+      let aux = children.right;
+
+      while (aux.left !== null) {
+        p = aux;
+        aux = aux.left;
+      }
+
+      if (p !== null) {
+        p.left = aux.right;
+      } else {
+        children.right = aux.right;
+      }
+      children.value = aux.value;
+      aux = null;
     }
- 
-  
+    return root;
+  }
 
   findParent(value, upperNode, root = this.root) {
     let parent;
@@ -125,7 +122,7 @@ class Tree {
     if (value < root.value) {
       parent = this.findParent(value, root, root.left);
     } else if (value > root.value) {
-      parent = this.findParent(value, root, root.right)
+      parent = this.findParent(value, root, root.right);
     }
     return parent;
   }
@@ -144,25 +141,78 @@ class Tree {
   }
 
   isLeaf(node = this.root) {
-    return (node.right === null && node.left === null);
+    return node.right === null && node.left === null;
   }
 
-  findLeftLeaf (node = this.root) {
+  findLeftLeaf(node = this.root) {
     if (node === null) return null;
     if (this.isLeaf(node)) return node;
     const leftLeaf = this.findLeftLeaf(node.left);
     return leftLeaf;
   }
 
-  /*   find() {}
+  levelOrder(func, root = this.root, temp = [], arr = []) {
+    if (!func) {
+      arr.push(root.value);
+    } else {
+      func(root);
+    }
+    if (root.left) {
+      temp.push(root.left);
+    }
+    if (root.right) {
+      temp.push(root.right);
+    }
 
-  levelOrder() {}
+    if (!root || !temp.length) return null;
 
-  inorder() {}
+    this.levelOrder(func, temp.shift(), temp, arr);
 
-  preorder() {}
+    return !func ? arr : null;
+  }
 
-  posorder() {}
+  preorder(func, root = this.root, arr = []) {
+    if (!root) return null;
+    if (func) {
+      func(root);
+    } else {
+      arr.push(root.value);
+    }
+
+    this.preorder(func, root.left, arr);
+    this.preorder(func, root.right, arr);
+
+    return !func ? arr : null;
+  }
+
+  inorder(func, root = this.root, arr = []) {
+    if (!root) return null;
+
+    this.inorder(func, root.left, arr);
+
+    if (func) func(root);
+    else arr.push(root.value);
+  
+    this.inorder(func, root.right, arr);
+
+    return !func ? arr : null;
+  }
+
+  postorder(func, root = this.root, arr = []) {
+    if (!root) return null;
+
+    this.postorder(func, root.left, arr);
+    this.postorder(func, root.right, arr);
+
+    if (func) {
+      func(root);
+    } else {
+      arr.push(root.value);
+    }
+    
+    return !func ? arr : null;
+  }
+  /*
 
   height() {}
 
@@ -173,18 +223,24 @@ class Tree {
   rebalance() {} */
 }
 
-const input = [3, 1, 6, 7, 5, 4, 9, 10, 11, 13 ,15, 17, 19, 21, 23];
+function duplicateValues(node) {
+  console.log(node.value * 2);
+}
+
+const input = [3, 1, 6, 7, 5, 4, 9, 10, 11, 13, 15, 17, 19, 21, 23];
 //const input = [ 1, 3];
-const ordInt = [...new Set(input.sort(function(a,b){
-  return a - b ;
-}))];
+const ordInt = [
+  ...new Set(
+    input.sort(function (a, b) {
+      return a - b;
+    })
+  ),
+];
+
 console.log(ordInt);
 treee = new Tree(ordInt);
-console.log(treee.root.value)
-
+console.log(treee.root.value);
 prettyPrint(treee.root);
-treee.delete(17)
+treee.delete(17);
 prettyPrint(treee.root);
-console.log(treee.find(10))
-
 
