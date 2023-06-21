@@ -228,7 +228,7 @@ class Tree {
   }
 
   depth(node = this.root, root = this.root, count = 0) {
-    if (root === node) return count;
+    if (root === node) return count + root.value;
     if (!root) return 0;
     if (this.isLeaf(root)) return 0;
 
